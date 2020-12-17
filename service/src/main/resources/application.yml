@@ -1,0 +1,31 @@
+url: localhost:8080
+
+server:
+  port: 8082
+  
+# Logging to stdout for development. Note: empty strings are significant.
+  tomcat:
+    accesslog:
+      enabled: true
+      directory: /dev
+      suffix:
+      prefix: stdout
+      buffered: false
+      file-date-format:
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+integration:
+  services:
+    mock-service:
+      url: http://localhost:8282
+    student-service:
+      url: http://localhost:8083
+  db-enabled: false
+  mock-submission-fixed: false
