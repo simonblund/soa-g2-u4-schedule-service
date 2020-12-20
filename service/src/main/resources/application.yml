@@ -1,7 +1,7 @@
-url: localhost:8080
+url: localhost:8083
 
 server:
-  port: 8082
+  port: 8083
   
 # Logging to stdout for development. Note: empty strings are significant.
   tomcat:
@@ -27,5 +27,9 @@ integration:
       url: http://localhost:8282
     student-service:
       url: http://localhost:8083
+    real-canvas:
+      url: https://ltu.instructure.com
+    time-edit:
+      url: https://cloud.timeedit.net/ltu/web/schedule1/ri.json
   db-enabled: false
   mock-submission-fixed: false

@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
-@EnableFeignClients("com.g2.courseservice.infrastructure.rest")
+@EnableFeignClients("com.g2.scheduleservice.infrastructure.rest")
 @SpringBootApplication
 public class SchedulerServiceApplication {
 

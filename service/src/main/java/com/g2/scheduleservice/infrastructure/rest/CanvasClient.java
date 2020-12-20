@@ -1,9 +1,10 @@
 package com.g2.scheduleservice.infrastructure.rest;
 
 
-import com.g2.studentservice.api.mock.canvas.CanvasResource;
+
+import com.g2.scheduleservice.infrastructure.rest.canvas.CanvasResource;
 import org.springframework.cloud.openfeign.FeignClient;
 
-@FeignClient(name = "canvas-client", url = "${integration.services.mock-service.url}")
+@FeignClient(name = "real-canvas-client", url = "${integration.services.real-canvas.url}")
 public interface CanvasClient extends CanvasResource {
 }
