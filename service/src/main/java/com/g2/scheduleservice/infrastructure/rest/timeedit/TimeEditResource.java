@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 public interface TimeEditResource {
-    @RequestMapping(method = RequestMethod.GET, path = ExternalPaths.TE_GET_OBJECT, consumes = "text/html")
+    @RequestMapping(method = RequestMethod.GET, path = ExternalPaths.TE_GET_OBJECT)
     ResponseEntity<TimeEditResponse> getObject(@PathVariable int objectId);
 }

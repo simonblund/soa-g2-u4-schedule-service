@@ -1,5 +1,6 @@
 package com.g2.scheduleservice.infrastructure.rest.timeedit;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -8,6 +9,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Data
@@ -16,9 +19,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class TimeEditResponse {
-    private List<String> columnheaders;
-    private List<TimeEditReservationResponse> reservations;
-
+public class TimeEditReservationResponse {
+    private long id;
+    private List<String> columns;
+    private LocalDate startdate;
+    private LocalDate enddate;
+    private LocalTime starttime;
+    private LocalTime endtime;
 
 }
