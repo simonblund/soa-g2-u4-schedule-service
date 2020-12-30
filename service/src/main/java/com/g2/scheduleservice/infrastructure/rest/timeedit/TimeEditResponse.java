@@ -9,16 +9,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class TimeEditResponse {
     private List<String> columnheaders;
-    private List<TimeEditReservationResponse> reservations;
+    private TimeEditInfoResponse info;
+    private Set<TimeEditReservationResponse> reservations;
 
 
 }

@@ -27,8 +27,9 @@ public class CustomFeignClient extends Client.Default {
 
 
         val headerMap = response.headers();
+        val body = response.body();
 
-        System.out.println(headerMap);
+        System.out.println("TE headers before change"+headerMap);
 
         List<String> v = new ArrayList<>();
         v.add("application/json");
@@ -44,11 +45,15 @@ public class CustomFeignClient extends Client.Default {
         });
 
 
-        System.out.println("new "+ newMap);
+        // These are the lovely Time Edit Request debugging strings.
+        // When active they will disable the responses from being forwarded to the application
+        //System.out.println("TE request: "+request.httpMethod()+request.url());
+        //System.out.println("TE response headers (after change): "+ newMap);
+        //System.out.println("TE response body: "+ body);
 
 
         //TODO do whatever you want with the responseBody - parse and modify it
 
-        return response.toBuilder().body(response.body()).headers(newMap).build();
+        return response.toBuilder().body(body).headers(newMap).build();
     }
 }

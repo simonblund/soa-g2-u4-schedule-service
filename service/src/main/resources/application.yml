@@ -2,16 +2,6 @@ url: localhost:8083
 
 server:
   port: 8083
-  
-# Logging to stdout for development. Note: empty strings are significant.
-  tomcat:
-    accesslog:
-      enabled: true
-      directory: /dev
-      suffix:
-      prefix: stdout
-      buffered: false
-      file-date-format:
 
 spring:
   datasource:
@@ -32,4 +22,3 @@ integration:
     time-edit:
       url: https://cloud.timeedit.net/ltu/web/schedule1/ri.json
   db-enabled: false
-  mock-submission-fixed: false
