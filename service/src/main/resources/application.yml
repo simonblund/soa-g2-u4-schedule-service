@@ -17,6 +17,8 @@ integration:
       url: http://localhost:8282
     student-service:
       url: http://localhost:8083
+    course-service:
+      url: http://localhost:8082
     real-canvas:
       url: https://ltu.instructure.com
     time-edit:
