@@ -15,5 +15,5 @@ public interface TimeEditResource {
     objectId the secret id of the thing we want to fetch - 132867
      */
     @RequestMapping(method = RequestMethod.GET, path = ExternalPaths.TE_GET_OBJECT)
-    ResponseEntity<TimeEditResponse> getObject(@PathVariable int objectId, @PathVariable int firstDate, @PathVariable int lastDate);
+    ResponseEntity<TimeEditResponse> getObject(@PathVariable long objectId, @PathVariable int firstDate, @PathVariable int lastDate);
 }

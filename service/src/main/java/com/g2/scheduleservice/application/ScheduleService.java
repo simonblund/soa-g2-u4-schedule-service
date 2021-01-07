@@ -6,5 +6,5 @@ import com.g2.scheduleservice.api.rest.schedule.ReservationResponse;
 import java.time.LocalDate;
 
 public interface ScheduleService {
-    CourseOccasionScheduleResponse getReservations(int objectId, LocalDate firstDate, LocalDate lastDate);
+    CourseOccasionScheduleResponse getReservations(long objectId, LocalDate firstDate, LocalDate lastDate);
 }
