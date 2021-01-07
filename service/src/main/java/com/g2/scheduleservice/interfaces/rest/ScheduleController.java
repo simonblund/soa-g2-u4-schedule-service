@@ -1,5 +1,8 @@
 package com.g2.scheduleservice.interfaces.rest;
 
+import com.g2.scheduleservice.api.rest.UrlPaths;
+import com.g2.scheduleservice.api.rest.schedule.CourseOccasionScheduleResponse;
+import com.g2.scheduleservice.application.ScheduleService;
 import com.g2.scheduleservice.infrastructure.rest.CanvasClient;
 import com.g2.scheduleservice.infrastructure.rest.TimeEditClient;
 import com.g2.scheduleservice.infrastructure.rest.canvas.CanvasCalendarResponse;
@@ -14,6 +17,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -23,6 +29,22 @@ public class ScheduleController {
 
     private final CanvasClient client;
     private final TimeEditClient timeEditClient;
+    private final ScheduleService service;
+
+    @GetMapping(UrlPaths.GET_FROM_OCCASIONID)
+    ResponseEntity<CourseOccasionScheduleResponse> getFromOccasionId(@PathVariable int courseOccasionId){
+        try {
+            val response = service.getReservations(
+                    courseOccasionId,
+                    LocalDate.now().minus(3, ChronoUnit.MONTHS),
+                    LocalDate.now().plus(3, ChronoUnit.MONTHS));
+            return ResponseEntity.ok(response);
+        }
+        catch (Exception e){
+            log.error(e.getMessage(), e);
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
     @GetMapping("get/{eventId}")
     ResponseEntity<CanvasCalendarResponse> getCanvasEvent(@PathVariable int eventId, @RequestHeader("CanvasToken") String canvasToken) {
@@ -34,7 +56,7 @@ public class ScheduleController {
         CacheControl cacheControl = CacheControl.noCache().sMaxAge(2, TimeUnit.SECONDS);
         log.warn("Request has come in {}", objectId);
 
-        val result = timeEditClient.getObject(objectId).getBody();
+        val result = timeEditClient.getObject(objectId, 20200901, 20210120).getBody();
         return ResponseEntity.ok().cacheControl(cacheControl).body(result);
     }
 
