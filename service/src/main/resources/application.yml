@@ -1,7 +1,7 @@
-url: localhost:8083
+url: localhost:8085
 
 server:
-  port: 8083
+  port: 8085
 
 feign:
   okhttp:
@@ -22,7 +22,7 @@ integration:
     student-service:
       url: http://localhost:8083
     course-service:
-      url: http://localhost:8082
+      url: http://localhost:8084
     real-canvas:
       url: https://ltu.instructure.com
     time-edit:
