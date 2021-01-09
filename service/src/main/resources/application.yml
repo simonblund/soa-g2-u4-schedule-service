@@ -3,6 +3,10 @@ url: localhost:8083
 server:
   port: 8083
 
+feign:
+  okhttp:
+    enabled: true
+
 spring:
   datasource:
     url: jdbc:h2:mem:testdb

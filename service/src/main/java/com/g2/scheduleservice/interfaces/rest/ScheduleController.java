@@ -13,10 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -33,20 +30,30 @@ public class ScheduleController {
     private final CourseServiceClient courseServiceClient;
 
     @GetMapping(UrlPaths.GET_FROM_OCCASIONID)
-    ResponseEntity<CourseOccasionScheduleResponse> getFromOccasionId(@PathVariable long courseOccasionId) {
+    ResponseEntity<CourseOccasionScheduleResponse> getFromOccasionId(@PathVariable long courseOccasionId, @RequestHeader("CanvasToken") String canvasToken, @RequestHeader("CanvasUser") int canvasUser) {
         try {
             val timeEditObject = courseServiceClient.getCourseOccasion(courseOccasionId).getTimeEditObjectId();
 
+            LocalDate startDate = LocalDate.now().minus(3, ChronoUnit.MONTHS);
+            LocalDate lastDate = LocalDate.now().plus(3, ChronoUnit.MONTHS);
+
+            CourseOccasionScheduleResponse response;
             if (timeEditObject != 0) {
-                val response = service.getReservations(
+                response = service.getReservationsTe(
                         timeEditObject,
-                        LocalDate.now().minus(3, ChronoUnit.MONTHS),
-                        LocalDate.now().plus(3, ChronoUnit.MONTHS));
-                return ResponseEntity.ok(response);
+                        startDate,
+                        lastDate);
             } else {
                 // Look in canvas
-                return ResponseEntity.badRequest().build();
+                response = service.getReservationsCa(
+                        courseOccasionId,
+                        canvasToken,
+                        canvasUser,
+                        startDate,
+                        lastDate
+                );
             }
+            return ResponseEntity.ok(response);
 
 
         } catch (Exception e) {
@@ -55,12 +62,23 @@ public class ScheduleController {
         }
     }
 
-    @GetMapping("get/{eventId}")
-    ResponseEntity<CanvasCalendarResponse> getCanvasEvent(@PathVariable int eventId, @RequestHeader("CanvasToken") String canvasToken) {
+    @PostMapping(UrlPaths.GET_FROM_OCCASIONID)
+    ResponseEntity<CourseOccasionScheduleResponse> saveToCanvas(@PathVariable long courseOccasionId, @RequestHeader("CanvasToken") String canvasToken, @RequestHeader("CanvasUser") int canvasUser, @RequestBody CourseOccasionScheduleResponse request ){
+        try {
+            val response = service.saveReservations(courseOccasionId, canvasToken, canvasUser, request);
+            return ResponseEntity.ok(response);
+        } catch (Exception e){
+            log.error(e.getMessage(), e);
+            return ResponseEntity.unprocessableEntity().build();
+        }
+        }
+
+    @GetMapping("test/get/{eventId}")
+    ResponseEntity<CanvasCalendarResponse> getCanvasEvent(@PathVariable int eventId, @RequestHeader("CanvasToken") String canvasToken, @RequestHeader("CanvasUser") int canvasUser) {
         return client.getCalendarEvent(eventId, tokenToBearer(canvasToken));
     }
 
-    @GetMapping("get/time-edit/{objectId}")
+    @GetMapping("test/get/time-edit/{objectId}")
     ResponseEntity<TimeEditResponse> getTEObject(@PathVariable int objectId) {
         CacheControl cacheControl = CacheControl.noCache().sMaxAge(2, TimeUnit.SECONDS);
         log.warn("Request has come in {}", objectId);
