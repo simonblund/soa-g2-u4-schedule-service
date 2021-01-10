@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,10 +56,24 @@ public class ScheduleServiceImpl implements ScheduleService {
         val result = input.getReservations()
                 .stream()
                 .map(i -> toCanvasCalendarEvent(i, canvasUserId, courseOccasionId))
-                .map(i -> canvasClient.saveToUserCalendar(canvasToken,i).getBody())
+                .map(i -> canvasClient.saveToUserCalendar(canvasToken,toFormParams(i)).getBody())
                 .map(i -> toReservationResponse(i))
                 .collect(Collectors.toList());
         return CourseOccasionScheduleResponse.builder().reservations(result).build();
+    }
+
+    private Map<String, ?> toFormParams(CanvasCalendarEvent input){
+        Map<String, String> result = new HashMap<>();
+
+        result.put("calendar_event[context_code]", input.getContextCode());
+        result.put("calendar_event[title]", input.getTitle());
+        result.put("calendar_event[description]", input.getDescription());
+        result.put("calendar_event[start_at]", input.getStartAt().format(DateTimeFormatter.ISO_DATE_TIME));
+        result.put("calendar_event[end_at]", input.getEndAt().format(DateTimeFormatter.ISO_DATE_TIME));
+        result.put("calendar_event[location_name]", input.getLocationName());
+        result.put("calendar_event[location_name]", input.getLocationName());
+        return result;
+
     }
 
     private CanvasCalendarEvent toCanvasCalendarEvent(ReservationResponse input, int canvasUserId, long courseOccasionId){

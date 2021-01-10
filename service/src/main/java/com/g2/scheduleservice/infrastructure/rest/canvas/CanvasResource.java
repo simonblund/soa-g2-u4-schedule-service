@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public interface CanvasResource {
     @RequestMapping(method = RequestMethod.GET, path = ExternalPaths.CANVAS_CALENDAR)
@@ -21,11 +22,11 @@ public interface CanvasResource {
             @PathVariable LocalDate endDate
     );
 
-    @RequestMapping(method = RequestMethod.POST, path = ExternalPaths.POST_CANVAS)
+    @RequestMapping(method = RequestMethod.POST, path = ExternalPaths.POST_CANVAS, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     ResponseEntity<CanvasCalendarEvent> saveToUserCalendar(
             @RequestHeader("Authorization") String token,
-            @RequestBody CanvasCalendarEvent body
-    );
+            @RequestBody Map<String, ?> postParams
+            );
 
 
 }

@@ -47,7 +47,7 @@ public class ScheduleController {
                 // Look in canvas
                 response = service.getReservationsCa(
                         courseOccasionId,
-                        canvasToken,
+                        tokenToBearer(canvasToken),
                         canvasUser,
                         startDate,
                         lastDate
@@ -65,7 +65,7 @@ public class ScheduleController {
     @PostMapping(UrlPaths.GET_FROM_OCCASIONID)
     ResponseEntity<CourseOccasionScheduleResponse> saveToCanvas(@PathVariable long courseOccasionId, @RequestHeader("CanvasToken") String canvasToken, @RequestHeader("CanvasUser") int canvasUser, @RequestBody CourseOccasionScheduleResponse request ){
         try {
-            val response = service.saveReservations(courseOccasionId, canvasToken, canvasUser, request);
+            val response = service.saveReservations(courseOccasionId, tokenToBearer(canvasToken), canvasUser, request);
             return ResponseEntity.ok(response);
         } catch (Exception e){
             log.error(e.getMessage(), e);
