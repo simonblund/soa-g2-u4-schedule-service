@@ -18,6 +18,7 @@ public class DomainObjectMapper {
         return BookingResponse.builder()
                 .room(room)
                 .resource(resource)
+                .relevantEvent(input.getRelatedEvent())
                 .contact(input.getContact())
                 .startAt(input.getStartAt())
                 .endAt(input.getEndAt())

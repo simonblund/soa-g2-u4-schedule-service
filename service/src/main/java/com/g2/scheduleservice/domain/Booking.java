@@ -26,6 +26,7 @@ public class Booking {
     private LocalDateTime startAt;
     private LocalDateTime endAt;
     private String contact;
+    private long relatedEvent;
 
 
     @ManyToOne

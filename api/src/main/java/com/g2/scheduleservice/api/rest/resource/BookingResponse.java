@@ -19,6 +19,7 @@ public class BookingResponse {
     private UUID uuid;
     private LocalDateTime startAt;
     private LocalDateTime endAt;
+    private long relevantEvent;
     private String contact;
     private RoomResponse room;
     private ResourceResponse resource;

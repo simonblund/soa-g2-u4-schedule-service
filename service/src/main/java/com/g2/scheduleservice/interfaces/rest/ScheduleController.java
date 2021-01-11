@@ -2,7 +2,12 @@ package com.g2.scheduleservice.interfaces.rest;
 
 import com.g2.scheduleservice.api.rest.UrlPaths;
 import com.g2.scheduleservice.api.rest.schedule.CourseOccasionScheduleResponse;
+import com.g2.scheduleservice.api.rest.schedule.ReservationRequest;
+import com.g2.scheduleservice.api.rest.schedule.ReservationResponse;
+import com.g2.scheduleservice.application.BookingService;
 import com.g2.scheduleservice.application.ScheduleService;
+import com.g2.scheduleservice.domain.BookingDto;
+import com.g2.scheduleservice.domain.DomainObjectMapper;
 import com.g2.scheduleservice.infrastructure.rest.CanvasClient;
 import com.g2.scheduleservice.infrastructure.rest.CourseServiceClient;
 import com.g2.scheduleservice.infrastructure.rest.TimeEditClient;
@@ -18,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -28,6 +34,7 @@ public class ScheduleController {
     private final TimeEditClient timeEditClient;
     private final ScheduleService service;
     private final CourseServiceClient courseServiceClient;
+    private final BookingService bookingService;
 
     @GetMapping(UrlPaths.GET_FROM_OCCASIONID)
     ResponseEntity<CourseOccasionScheduleResponse> getFromOccasionId(@PathVariable long courseOccasionId, @RequestHeader("CanvasToken") String canvasToken, @RequestHeader("CanvasUser") int canvasUser) {
@@ -63,15 +70,48 @@ public class ScheduleController {
     }
 
     @PostMapping(UrlPaths.GET_FROM_OCCASIONID)
-    ResponseEntity<CourseOccasionScheduleResponse> saveToCanvas(@PathVariable long courseOccasionId, @RequestHeader("CanvasToken") String canvasToken, @RequestHeader("CanvasUser") int canvasUser, @RequestBody CourseOccasionScheduleResponse request ){
+    ResponseEntity<ReservationResponse> saveToCanvas(@PathVariable long courseOccasionId, @RequestHeader("CanvasToken") String canvasToken, @RequestHeader("CanvasUser") int canvasUser, @RequestBody ReservationRequest request) {
         try {
             val response = service.saveReservations(courseOccasionId, tokenToBearer(canvasToken), canvasUser, request);
+            if(request.getRooms() != null && !request.getRooms().isEmpty()){
+                val rooms = request.getRooms().stream()
+                        .map(i -> bookingService.bookAThing(BookingDto.builder()
+                                .room(true)
+                                .contact(request.getContactName())
+                                .startAt(request.getStartTime())
+                                .endAt(request.getEndTime())
+                                .id(i)
+                                .relatedEvent(response.getId())
+                                .build()))
+                        .map(i -> DomainObjectMapper.toBookingResponse(i))
+                        .collect(Collectors.toList());
+                response.setRooms(rooms);
+            }
+
+            if(request.getResources() != null && !request.getResources().isEmpty()){
+                val resources = request.getResources().stream()
+                        .map(i -> bookingService.bookAThing(BookingDto.builder()
+                                .room(false)
+                                .contact(request.getContactName())
+                                .startAt(request.getStartTime())
+                                .endAt(request.getEndTime())
+                                .id(i)
+                                .relatedEvent(response.getId())
+                                .build()))
+                        .map(i -> DomainObjectMapper.toBookingResponse(i))
+                        .collect(Collectors.toList());
+                response.setResources(resources);
+            }
+
+
+
+
             return ResponseEntity.ok(response);
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
             return ResponseEntity.unprocessableEntity().build();
         }
-        }
+    }
 
     @GetMapping("test/get/{eventId}")
     ResponseEntity<CanvasCalendarResponse> getCanvasEvent(@PathVariable int eventId, @RequestHeader("CanvasToken") String canvasToken, @RequestHeader("CanvasUser") int canvasUser) {

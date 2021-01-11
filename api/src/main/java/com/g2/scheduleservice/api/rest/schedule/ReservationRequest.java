@@ -2,7 +2,6 @@ package com.g2.scheduleservice.api.rest.schedule;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.g2.scheduleservice.api.rest.resource.BookingResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,22 +15,18 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class ReservationResponse {
-    private long id;
+public class ReservationRequest {
     private String location;
     private long userId;
     private String contactName;
-
     private String distanceUrl;
-    private String eventUrl;
     private String title;
     private String description;
-
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-
-    private List<BookingResponse> rooms;
-    private List<BookingResponse> resources;
-
     private Session session;
+
+    private List<Long> rooms;
+    private List<Long> resources;
+
 }

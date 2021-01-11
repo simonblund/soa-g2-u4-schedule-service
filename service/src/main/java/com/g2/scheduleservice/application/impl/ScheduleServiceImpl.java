@@ -1,6 +1,7 @@
 package com.g2.scheduleservice.application.impl;
 
 import com.g2.scheduleservice.api.rest.schedule.CourseOccasionScheduleResponse;
+import com.g2.scheduleservice.api.rest.schedule.ReservationRequest;
 import com.g2.scheduleservice.api.rest.schedule.ReservationResponse;
 import com.g2.scheduleservice.api.rest.schedule.Session;
 import com.g2.scheduleservice.application.ScheduleService;
@@ -52,14 +53,20 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public CourseOccasionScheduleResponse saveReservations(long courseOccasionId, String canvasToken, int canvasUserId, CourseOccasionScheduleResponse input){
-        val result = input.getReservations()
-                .stream()
-                .map(i -> toCanvasCalendarEvent(i, canvasUserId, courseOccasionId))
-                .map(i -> canvasClient.saveToUserCalendar(canvasToken,toFormParams(i)).getBody())
-                .map(i -> toReservationResponse(i))
-                .collect(Collectors.toList());
-        return CourseOccasionScheduleResponse.builder().reservations(result).build();
+    public ReservationResponse saveReservations(long courseOccasionId, String canvasToken, int canvasUserId, ReservationRequest input){
+        val canvasEvent = toCanvasCalendarEvent(input, canvasUserId, courseOccasionId);
+        val response = canvasClient.saveToUserCalendar(canvasToken,toFormParams(canvasEvent)).getBody();
+
+        return ReservationResponse.builder()
+                .id(response.getId())
+                .title(response.getTitle())
+                .description(response.getDescription())
+                .contactName(response.getDescription())
+                .location(response.getLocationName())
+                .distanceUrl(response.getDescription())
+                .startTime(response.getStartAt())
+                .endTime(response.getEndAt())
+                .build();
     }
 
     private Map<String, ?> toFormParams(CanvasCalendarEvent input){
@@ -92,8 +99,24 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .build();
     }
 
+    private CanvasCalendarEvent toCanvasCalendarEvent(ReservationRequest input, int canvasUserId, long courseOccasionId){
+        String description = input.getDescription()
+                + "\n distance-url: " + input.getDistanceUrl()
+                + "\n contact: " + input.getContactName();
+        return CanvasCalendarEvent.builder()
+                .contextCode("user_"+canvasUserId)
+                .title(courseOccasionId+" : "+input.getTitle())
+                .description(description)
+                .startAt(input.getStartTime())
+                .endAt(input.getEndTime())
+                .locationName(input.getLocation())
+                .locationAdress(input.getLocation())
+                .build();
+    }
+
     private ReservationResponse toReservationResponse(CanvasCalendarEvent input){
         return ReservationResponse.builder()
+                .id(input.getId())
                 .title(input.getTitle())
                 .description(input.getDescription())
                 .startTime(input.getStartAt())
