@@ -4,6 +4,8 @@ import com.g2.scheduleservice.api.rest.resource.BookingResponse;
 import com.g2.scheduleservice.api.rest.resource.ResourceResponse;
 import com.g2.scheduleservice.api.rest.resource.RoomResponse;
 import com.g2.scheduleservice.api.rest.schedule.CourseOccasionScheduleResponse;
+import com.g2.scheduleservice.api.rest.schedule.ReservationRequest;
+import com.g2.scheduleservice.api.rest.schedule.ReservationResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +16,7 @@ public interface ScheduleServiceResource {
     ResponseEntity<CourseOccasionScheduleResponse> getFromOccasionId(@PathVariable long courseOccasionId, @RequestHeader("CanvasToken") String canvasToken, @RequestHeader("CanvasUser") int canvasUser);
 
     @PostMapping(UrlPaths.GET_FROM_OCCASIONID)
-    ResponseEntity<CourseOccasionScheduleResponse> saveToCanvas(@PathVariable long courseOccasionId, @RequestHeader("CanvasToken") String canvasToken, @RequestHeader("CanvasUser") int canvasUser, @RequestBody CourseOccasionScheduleResponse request);
+    ResponseEntity<ReservationResponse> saveToCanvas(@PathVariable long courseOccasionId, @RequestHeader("CanvasToken") String canvasToken, @RequestHeader("CanvasUser") int canvasUser, @RequestBody ReservationRequest request);
 
     @GetMapping(UrlPaths.BOOKING_RESOURCE)
     ResponseEntity<List<BookingResponse>> getAllBookings();
