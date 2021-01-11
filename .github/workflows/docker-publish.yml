@@ -33,7 +33,7 @@ jobs:
         run: ./docker_build.sh
 
       - name: Build Docker image
-        run: docker build . -t examination-service
+        run: docker build . -t schedule-service
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
