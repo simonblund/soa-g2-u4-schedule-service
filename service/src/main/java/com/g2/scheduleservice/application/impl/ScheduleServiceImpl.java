@@ -64,8 +64,8 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .contactName(response.getDescription())
                 .location(response.getLocationName())
                 .distanceUrl(response.getDescription())
-                .startTime(response.getStartAt().toInstant(ZoneOffset.UTC))
-                .endTime(response.getEndAt().toInstant(ZoneOffset.UTC))
+                .startTime(response.getStartAt())
+                .endTime(response.getEndAt())
                 .build();
     }
 
@@ -75,8 +75,8 @@ public class ScheduleServiceImpl implements ScheduleService {
         result.put("calendar_event[context_code]", input.getContextCode());
         result.put("calendar_event[title]", input.getTitle());
         result.put("calendar_event[description]", input.getDescription());
-        result.put("calendar_event[start_at]", input.getStartAt().format(DateTimeFormatter.ISO_DATE_TIME));
-        result.put("calendar_event[end_at]", input.getEndAt().format(DateTimeFormatter.ISO_DATE_TIME));
+        result.put("calendar_event[start_at]", input.getStartAt().toString());
+        result.put("calendar_event[end_at]", input.getEndAt().toString());
         result.put("calendar_event[location_name]", input.getLocationName());
         //result.put("calendar_event[location_name]", input.getLocationName());
         return result;
@@ -92,8 +92,8 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .contextCode("user_"+canvasUserId)
                 .title(courseOccasionId+" : "+input.getTitle())
                 .description(description)
-                .startAt(ofInstant(input.getStartTime(), ZoneId.systemDefault()))
-                .endAt(ofInstant(input.getEndTime(), ZoneId.systemDefault()))
+                .startAt(input.getStartTime())
+                .endAt(input.getEndTime())
                 .locationName(input.getLocation())
                 .locationAdress(input.getLocation())
                 .build();
@@ -107,8 +107,8 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .contextCode("user_"+canvasUserId)
                 .title(courseOccasionId+" : "+input.getTitle())
                 .description(description)
-                .startAt(ofInstant(input.getStartTime(), ZoneId.systemDefault()))
-                .endAt(ofInstant(input.getEndTime(), ZoneId.systemDefault()))
+                .startAt(input.getStartTime())
+                .endAt(input.getEndTime())
                 .locationName(input.getLocation())
                 .locationAdress(input.getLocation())
                 .build();
@@ -119,15 +119,14 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .id(input.getId())
                 .title(input.getTitle())
                 .description(input.getDescription())
-                .startTime(input.getStartAt().toInstant(ZoneOffset.UTC))
-                .endTime(input.getEndAt().toInstant(ZoneOffset.UTC))
+                .startTime(input.getStartAt())
+                .endTime(input.getEndAt())
                 //.startTime(input.getStartAt())
                 //.endTime(input.getEndAt())
                 .eventUrl("url"+input.getId())
                 .distanceUrl(input.getDescription().toUpperCase())
                 .location(input.getLocationName())
                 .contactName(input.getDescription())
-                .session(toSession(input.getStartAt()))
                 .build();
     }
 
@@ -141,26 +140,6 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .build();
     }
 
-    private Session toSession(LocalDateTime startTime){
-        int hour = startTime.toLocalTime().getHour();
-
-        switch (hour){
-            case 8:
-                return Session.PASS1;
-
-            case 10:
-                return Session.PASS2;
-
-            case 13:
-                return Session.PASS3;
-            case 14:
-                return Session.PASS4;
-            case 16:
-                return Session.PASS5;
-            default:
-                return Session.PASS1;
-        }
-    }
 
     private ReservationResponse toReservationResponse(TimeEditReservationResponse input) {
         System.out.println("JOIJH" + input);
