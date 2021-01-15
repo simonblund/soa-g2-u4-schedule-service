@@ -14,13 +14,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static java.time.LocalDateTime.ofInstant;
 
 @Service
 @RequiredArgsConstructor
@@ -64,8 +64,8 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .contactName(response.getDescription())
                 .location(response.getLocationName())
                 .distanceUrl(response.getDescription())
-                .startTime(response.getStartAt())
-                .endTime(response.getEndAt())
+                .startTime(response.getStartAt().toInstant(ZoneOffset.UTC))
+                .endTime(response.getEndAt().toInstant(ZoneOffset.UTC))
                 .build();
     }
 
@@ -78,7 +78,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         result.put("calendar_event[start_at]", input.getStartAt().format(DateTimeFormatter.ISO_DATE_TIME));
         result.put("calendar_event[end_at]", input.getEndAt().format(DateTimeFormatter.ISO_DATE_TIME));
         result.put("calendar_event[location_name]", input.getLocationName());
-        result.put("calendar_event[location_name]", input.getLocationName());
+        //result.put("calendar_event[location_name]", input.getLocationName());
         return result;
 
     }
@@ -92,8 +92,8 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .contextCode("user_"+canvasUserId)
                 .title(courseOccasionId+" : "+input.getTitle())
                 .description(description)
-                .startAt(input.getStartTime())
-                .endAt(input.getEndTime())
+                .startAt(ofInstant(input.getStartTime(), ZoneId.systemDefault()))
+                .endAt(ofInstant(input.getEndTime(), ZoneId.systemDefault()))
                 .locationName(input.getLocation())
                 .locationAdress(input.getLocation())
                 .build();
@@ -107,8 +107,8 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .contextCode("user_"+canvasUserId)
                 .title(courseOccasionId+" : "+input.getTitle())
                 .description(description)
-                .startAt(input.getStartTime())
-                .endAt(input.getEndTime())
+                .startAt(ofInstant(input.getStartTime(), ZoneId.systemDefault()))
+                .endAt(ofInstant(input.getEndTime(), ZoneId.systemDefault()))
                 .locationName(input.getLocation())
                 .locationAdress(input.getLocation())
                 .build();
@@ -119,8 +119,10 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .id(input.getId())
                 .title(input.getTitle())
                 .description(input.getDescription())
-                .startTime(input.getStartAt())
-                .endTime(input.getEndAt())
+                .startTime(input.getStartAt().toInstant(ZoneOffset.UTC))
+                .endTime(input.getEndAt().toInstant(ZoneOffset.UTC))
+                //.startTime(input.getStartAt())
+                //.endTime(input.getEndAt())
                 .eventUrl("url"+input.getId())
                 .distanceUrl(input.getDescription().toUpperCase())
                 .location(input.getLocationName())
@@ -168,8 +170,10 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .distanceUrl(input.getColumns().get(7))
                 .eventUrl("https://cloud.timeedit.net/ltu/web/schedule1/ri.json?h=t&sid=3&objects=" + input.getId() + ".28&ox=0&types=0&fe=0")
                 .location(input.getColumns().get(1))
-                .startTime(LocalDateTime.of(input.getStartdate(), input.getStarttime()))
-                .endTime(LocalDateTime.of(input.getEnddate(), input.getEndtime()))
+                .startTime(LocalDateTime.of(input.getStartdate(), input.getStarttime()).toInstant(ZoneOffset.UTC))
+                .endTime(LocalDateTime.of(input.getEnddate(), input.getEndtime()).toInstant(ZoneOffset.UTC))
+                //.startTime(LocalDateTime.of(input.getStartdate(), input.getStarttime()))
+                //.endTime(LocalDateTime.of(input.getEnddate(), input.getEndtime()))
                 .description(input.getColumns().get(5))
                 .build();
 

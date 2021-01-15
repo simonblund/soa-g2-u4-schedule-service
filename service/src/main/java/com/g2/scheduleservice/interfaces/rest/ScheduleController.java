@@ -21,9 +21,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import static java.time.LocalDateTime.ofInstant;
 
 @Slf4j
 @RestController
@@ -78,8 +81,10 @@ public class ScheduleController {
                         .map(i -> bookingService.bookAThing(BookingDto.builder()
                                 .room(true)
                                 .contact(request.getContactName())
-                                .startAt(request.getStartTime())
-                                .endAt(request.getEndTime())
+                                .startAt(ofInstant(request.getStartTime(), ZoneId.systemDefault()))
+                                .endAt(ofInstant(request.getEndTime(), ZoneId.systemDefault()))
+                                //.startAt(request.getStartTime().toLocalDateTime())
+                                //.endAt(request.getEndTime().toLocalDateTime())
                                 .id(i)
                                 .relatedEvent(response.getId())
                                 .build()))
@@ -93,8 +98,10 @@ public class ScheduleController {
                         .map(i -> bookingService.bookAThing(BookingDto.builder()
                                 .room(false)
                                 .contact(request.getContactName())
-                                .startAt(request.getStartTime())
-                                .endAt(request.getEndTime())
+                                .startAt(ofInstant(request.getStartTime(), ZoneId.systemDefault()))
+                                .endAt(ofInstant(request.getEndTime(), ZoneId.systemDefault()))
+                                //.startAt(request.getStartTime().toLocalDateTime())
+                                //.endAt(request.getEndTime().toLocalDateTime())
                                 .id(i)
                                 .relatedEvent(response.getId())
                                 .build()))
